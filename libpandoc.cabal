@@ -1,0 +1,13 @@
+Name:		libpandoc
+Version:	0.1
+Cabal-Version:  >= 1.2
+License:	BSD3
+Author:         Anton Tayanovskyy
+Maintainer:     Anton Tayanovskyy <name.surname@gmail.com>
+Synopsis:       A configuration of Pandoc built into a shared object (dynamically linked library)
+Build-Type:	Simple
+
+Library
+  Build-Depends: pandoc
+
+
