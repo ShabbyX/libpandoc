@@ -20,7 +20,6 @@ install: $(LIB)
 test:
 	$H -lpandoc test/test.c -o test/test
 	test/test
-	mzscheme test/test.ss test/README
 
 %.so: %.hs lib$(NAME)-so.c
 	$H $F --make -no-hs-main -optl-shared -o $@ $< lib$(NAME)-so.c

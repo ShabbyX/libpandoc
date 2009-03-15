@@ -2,7 +2,11 @@
 #include <pandoc.h>
 
 void test(void) {
-  printf("%s", pandoc("markdown", "html", "[hello](http://hello.com)"));
+  printf("%s", pandoc(PANDOC_FMT_MARKDOWN,
+		      "null",
+		      PANDOC_FMT_HTML,
+		      "{\"WrapText\": false}",
+		      "[hello](http://hello.com)"));
 }
 
 int main(int argc, char *argv[]) {

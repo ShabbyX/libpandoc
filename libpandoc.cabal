@@ -1,5 +1,5 @@
 Name:		libpandoc
-Version:	0.1
+Version:	0.2
 Cabal-Version:  >= 1.2
 License:	BSD3
 Author:         Anton Tayanovskyy
@@ -8,6 +8,6 @@ Synopsis:       A configuration of Pandoc built into a shared object (dynamicall
 Build-Type:	Simple
 
 Library
-  Build-Depends: pandoc
+  Build-Depends: pandoc, json
 
 
