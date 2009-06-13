@@ -7,8 +7,8 @@ First install some packages. YMMV - I probably already had a couple of needed de
 
 Go to http://haskell.org/cabal/release/cabal-install-latest/ and grab the latest.
 
-    tar xcf  ???
-    cd ???
+    tar xfz cabal-install-X.X.X.tar.gz
+    cd cabal-install-X.X.X
     ./bootstrap.sh
 
 Grab a cup of coffee.
