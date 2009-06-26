@@ -1,11 +1,14 @@
 Building libpandoc on Ubuntu
 ----------------------------
 
-First install some packages. YMMV - I probably already had a couple of needed dependencies installed, such as `build-essentials`.
+First install some packages. YMMV - I probably already had a couple of
+needed dependencies installed, such as `build-essentials`.
 
-    sudo apt-get install ghc6 haskell-devscripts libghc6-network-dev libghc6-parsec-dev libghc6-mtl-dev
+    sudo apt-get install ghc6 haskell-devscripts libghc6-network-dev \
+        libghc6-parsec-dev libghc6-mtl-dev
 
-Go to http://haskell.org/cabal/release/cabal-install-latest/ and grab the latest.
+Go to http://haskell.org/cabal/release/cabal-install-latest/ and grab
+the latest.
 
     tar xfz cabal-install-X.X.X.tar.gz
     cd cabal-install-X.X.X
@@ -20,11 +23,17 @@ When it's done, you just need to link the `cabal` binary.
     cd bin
     ln -s ~/.cabal/bin/cabal cabal
 
+Alternatively, add ~/.cabal/bin to your path.
+
 Use cabal to install the required packages:
 
     cabal update
     cabal install json
     cabal install pandoc
+
+To enable extra features of Pandoc:
+
+    cabal install pandoc -fhighlighting -fciteproc
 
 And finally, we can build the binary:
 
