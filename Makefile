@@ -1,27 +1,21 @@
-PREFIX = /usr
-NAME   = pandoc
-LIB    = lib$(NAME).so
-LIBDIR = $(PREFIX)/lib
-INCDIR = $(PREFIX)/include
-H      = ghc
-F      = -O2 -optl-s
+Lib = LibPandoc
+lib = pandoc
 
-all: $(LIB)
-	rm -f *.o *stub* *.hi
+all: $(lib).so
+
+$(lib).so: $(lib).o $(Lib).o
+	ghc --make -no-hs-main -optl-shared -o $@ $(lib).c $(Lib).hs
+
+$(lib).o: $(Lib).o
 
 clean:
-	rm -f *.so *.o *stub* *.hi test/test test/*.o
+	rm -rf *stub* *.so *.o *.hi *.hs
 
-install: $(LIB)
-	cp $(LIB) $(LIBDIR)/
-	cp pandoc.h $(INCDIR)/
-	ldconfig
+%.hs: %.hsc
+	hsc2hs -I. $<
 
-test:
-	$H -lpandoc test/test.c -o test/test
-	test/test
+%.o: %.hs
+	ghc -c $<
 
-%.so: %.hs lib$(NAME)-so.c
-	$H $F --make -no-hs-main -optl-shared -o $@ $< lib$(NAME)-so.c
-
-.PHONY: test clean
+%.o: %.c
+	ghc -c $<
