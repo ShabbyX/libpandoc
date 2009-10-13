@@ -1,21 +1,14 @@
-Lib = LibPandoc
-lib = pandoc
+all:	build
 
-all: $(lib).so
+configure:
+	./Setup.lhs configure
 
-$(lib).so: $(lib).o $(Lib).o
-	ghc --make -no-hs-main -optl-shared -o $@ $(lib).c $(Lib).hs
+build:
+	./Setup.lhs build
 
-$(lib).o: $(Lib).o
+install: 
+	./Setup.lhs install
 
 clean:
-	rm -rf *stub* *.so *.o *.hi *.hs
+	./Setup.lhs clean
 
-%.hs: %.hsc
-	hsc2hs -I. $<
-
-%.o: %.hs
-	ghc -c $<
-
-%.o: %.c
-	ghc -c $<
