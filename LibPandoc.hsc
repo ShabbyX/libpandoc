@@ -53,7 +53,7 @@ readFlags flags = foldl' fold defaults rules where
     defaults = (defaultParserState, defaultWriterOptions)
     fold x (mask, g) | flags .&. mask == 0 = x
                      | otherwise           = g x
-    rules = 
+    rules =
         [((#const PANDOC_FLAG_EMAIL_OBFUSCATION_NONE),
           (\(r, w) -> (r, w { writerEmailObfuscation = NoObfuscation })))
         ,((#const PANDOC_FLAG_EMAIL_OBFUSCATION_JAVASCRIPT),
@@ -72,7 +72,7 @@ readFlags flags = foldl' fold defaults rules where
         ,((#const PANDOC_FLAG_MATH_LATEXMATHML),
           (\(r, w) -> (r, w { writerHTMLMathMethod = LaTeXMathML Nothing })))
         ,((#const PANDOC_FLAG_MATH_MIMETEX),
-          (\(r, w) -> 
+          (\(r, w) ->
            (r, w { writerHTMLMathMethod = MimeTeX "/cgi-bin/mimetex.cgi" })))
         ,((#const PANDOC_FLAG_NO_WRAP),
           (\(r, w) -> (r, w { writerWrapText = False })))
@@ -89,7 +89,8 @@ readFlags flags = foldl' fold defaults rules where
         ,((#const PANDOC_FLAG_SMART),
           (\(r, w) -> (r { stateSmart = True }, w)))
         ,((#const PANDOC_FLAG_STANDALONE),
-          (\(r, w) -> (r { stateStandalone = True }, w)))
+          (\(r, w) -> (r { stateStandalone = True }, 
+                       w { writerStandalone = True })))
         ,((#const PANDOC_FLAG_STRICT),
           (\(r, w) -> (r { stateStrict = True }, w)))
         ,((#const PANDOC_FLAG_TOC),
@@ -130,7 +131,7 @@ writerWithHeader :: String -> Writer -> Writer
 writerWithHeader h w o | writerHeader o == "" = w $ o { writerHeader = h }
                        | otherwise            = w o
 
-type Writer = WriterOptions -> Pandoc -> String       
+type Writer = WriterOptions -> Pandoc -> String
 type Reader = ParserState   -> String -> Pandoc
 
 writerLHS :: Writer -> Writer
@@ -149,7 +150,7 @@ writerByFormat Markdown     = writeMarkdown
 writerByFormat Markdown_LHS = writerLHS writeMarkdown
 writerByFormat MediaWiki    = writeMediaWiki
 writerByFormat Native       = const prettyPandoc
-writerByFormat ODT          = let h = defaultOpenDocumentHeader in 
+writerByFormat ODT          = let h = defaultOpenDocumentHeader in
                               writerWithHeader h writeOpenDocument
 writerByFormat OpenDocument = let h = defaultOpenDocumentHeader in
                               writerWithHeader h writeOpenDocument
@@ -175,7 +176,7 @@ pandoc inputFormat outputFormat flags options readerPtr writerPtr = run where
               reader <- readerByFormat inpFmt
               let writer               = writerByFormat outFmt
                   cReader              = peekReader readerPtr
-                  cWriter              = peekWriter writerPtr                              
+                  cWriter              = peekWriter writerPtr
                   (rOptions, wOptions) = readFlags flags
               let transform = writer wOptions . reader rOptions
               let process buf = do
