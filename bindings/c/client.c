@@ -14,7 +14,12 @@ void std_writer(char* data, int length) {
 int main() {
   pandoc_init();
   char* error = 
-    pandoc(PANDOC_FMT_ODT, PANDOC_FMT_HTML, 0, NULL, *std_reader, *std_writer);
+    pandoc(PANDOC_FMT_MARKDOWN, 
+           PANDOC_FMT_HTML, 
+           PANDOC_FLAG_TOC | PANDOC_FLAG_STANDALONE, 
+           NULL, 
+           *std_reader, 
+           *std_writer);
 
   if (error != NULL) {
     printf("ERROR: %s\n", error);
