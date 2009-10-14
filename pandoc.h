@@ -47,7 +47,7 @@
 extern void pandoc_init();
 
 /* Shuts down the Haskell runtime.  */
-extern void pandoc_end();
+extern void pandoc_exit();
 
 /* Calls pandoc with given input and output streams. Returns a NULL on
    success, or a NULL-terminated error message on failure  */
@@ -57,5 +57,7 @@ extern char* pandoc(int input_format,
                     char* options,
                     int (*reader)(char*, int),
                     void (*writer)(char*, int));
+
+int one();
 
 #endif /* !_PANDOC_H */
