@@ -27,7 +27,7 @@ void pandoc_exit()
 void pandoc_init()
 {
   int argc = 1;
-  static char* args[] = {"libpandoc", NULL};
+  static char* args[] = {"libpandoc"};
   char** argv = args;
   hs_init(&argc, &argv);
   hs_add_root(__stginit_LibPandoc);
