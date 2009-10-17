@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<!-- This is a NAnt build file.  -->
+<project name="libpandoc" default="build" basedir=".">
+  <target name="build">
+    <mkdir dir="bin"/>
+    <csc target="library" output="bin/Pandoc.dll">
+      <sources>
+        <include name="Pandoc.cs"/>
+      </sources>
+    </csc>
+  </target>
+  <target name="clean">
+    <delete dir="bin"/>
+  </target>
+</project>
