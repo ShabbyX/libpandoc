@@ -1,5 +1,5 @@
-namespace LibPandoc {
-
+namespace Pandoc 
+{
     using System;
     using System.IO;
     using System.Text;
@@ -35,7 +35,6 @@ namespace LibPandoc {
         MimeTeX     = 0x00100
     };
 
-    ///
     public enum EmailObfuscation
     {
         None       = 0x00001,
@@ -79,15 +78,16 @@ namespace LibPandoc {
         public static extern void pandoc_exit();
 
         [DllImport("libpandoc")]
-        public static extern int pandoc(int inputFormat,
-                                        int outputFormat,
-                                        int flags,
-                                        string options,
-                                        Reader reader,
-                                        Writer writer);
+        public static extern string pandoc
+            (int    inputFormat,
+             int    outputFormat,
+             int    flags,
+             string options,
+             Reader reader,
+             Writer writer);
     }
 
-    class Config
+    public class Config
     {
         private int              flags;
         private EmailObfuscation obfuscation;
@@ -126,10 +126,17 @@ namespace LibPandoc {
         }
     }
 
-    class Pandoc : IDisposable
+    public class PandocException : Exception 
+    {
+        public PandocException(string message) : base(message)
+        {
+        }
+    }
+
+    public class Processor : IDisposable
     {
 
-        Pandoc()
+        public Processor()
         {
             Native.pandoc_init();
         }
@@ -150,17 +157,23 @@ namespace LibPandoc {
             /// TODO: reduce memory consumption by streaming.
             var d = Encoding.UTF8.GetBytes(input.ReadToEnd());
             using (var i = new MemoryStream(d)) {
-                Native.pandoc(Convert.ToInt32(source),
-                              Convert.ToInt32(target),
-                              config.ToInt32(),
-                              /// TODO: options
-                              "",
-                              delegate (byte[] data, int length) {
-                                  return i.Read(data, 0, length);
-                              },
-                              delegate (byte[] data, int length) {
-                                  output.Write(Encoding.UTF8.GetChars(data));
-                              });
+                Reader r = 
+                    delegate (byte[] data, int length) 
+                    {
+                        return i.Read(data, 0, length);
+                    };                
+                Writer w = 
+                    delegate (byte[] data, int length) {
+                        output.Write(Encoding.UTF8.GetChars(data));
+                    };
+                var s = Convert.ToInt32(source);
+                var t = Convert.ToInt32(target);
+                var c = config.ToInt32();
+                var o = "";  /* TODO: OPTIONS  */
+                var err = Native.pandoc(s, t, c, o, r, w);
+                if (err != null) {
+                    throw new PandocException(err);
+                }
             }
         }
 
@@ -170,4 +183,3 @@ namespace LibPandoc {
         }
     }
 }
-
