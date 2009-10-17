@@ -12,21 +12,21 @@ void std_writer(char* data, int length) {
 }
 
 int main() {
-  pandoc_init();
-  char* error = 
-    pandoc(PANDOC_FMT_MARKDOWN, 
-           PANDOC_FMT_HTML, 
-           PANDOC_FLAG_TOC | PANDOC_FLAG_STANDALONE, 
-           NULL, 
-           *std_reader, 
+  pandoc_init();  
+  char* error =
+    pandoc(PANDOC_FMT_MARKDOWN,
+           PANDOC_FMT_HTML,
+           PANDOC_FLAG_TOC | PANDOC_FLAG_STANDALONE,
+           NULL,
+           *std_reader,
            *std_writer);
 
   if (error != NULL) {
     printf("ERROR: %s\n", error);
-    pandoc_end();
+    pandoc_exit();
     return -1;
   } else {
-    pandoc_end();
+    pandoc_exit();
     return 0;
   }
 }

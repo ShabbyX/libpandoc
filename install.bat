@@ -1,0 +1,1 @@
+xcopy dist\build\libpandoc.dll\libpandoc.dll %windir%\System32\

@@ -8,17 +8,19 @@
         <include name="Pandoc.cs"/>
       </sources>
     </csc>
-  </target>
-  <target name="test" depends="build">
+  </target>  
+  <target name="build-tests" depends="build">
     <csc target="library" output="bin/Pandoc.Tests.dll">
       <sources>
         <include name="Pandoc.Tests.cs"/>
       </sources>
       <references>
-        <include name="lib/nunit.framework.dll"/>
+        <include name="nunit.framework.dll"/>
         <include name="bin/Pandoc.dll"/>
       </references>
     </csc>
+  </target>
+  <target name="test" depends="build-tests">
     <nunit2>
       <test assemblyname="bin/Pandoc.Tests.dll"/>
       <formatter type="Plain"/>
