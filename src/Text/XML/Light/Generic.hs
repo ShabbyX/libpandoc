@@ -56,3 +56,4 @@ decodeXml e@(Xml.Element (Xml.QName name _ _) _ _ _) = dec name where
       f <- fields
       n <- dataName
       return $ Rep.ValueRep n (Left f)
+    dec _ = Nothing

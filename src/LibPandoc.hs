@@ -7,6 +7,7 @@ import Foreign
 import Foreign.C.String
 import Foreign.C.Types
 import LibPandoc.Instances
+import LibPandoc.IO
 import LibPandoc.Settings
 import System.IO.Unsafe
 import Text.Pandoc
@@ -16,16 +17,11 @@ import qualified Data.Generics.Rep as Rep
 import qualified Text.XML.Light as Xml
 import qualified Text.XML.Light.Generic as XG
 
--- | Represents an input stream as a function. 
-type CReader = CWString -> CInt -> CInt -> IO CInt
-
--- | Represents an output stream as a function.
-type CWriter = CWString -> CInt -> CInt -> IO ()
 
 -- | The type of the main entry point.
-type CPandoc = CWString -> CWString -> CWString 
+type CPandoc = CString -> CString -> CString 
              -> FunPtr CReader -> FunPtr CWriter
-             -> IO CWString
+             -> IO CString
 
 foreign export ccall "pandoc" pandoc     :: CPandoc
 foreign export ccall "increase" increase :: CInt -> IO CInt
@@ -92,13 +88,13 @@ joinRep (Rep.ListRep x) (Rep.ListRep y) =
     Rep.ListRep (zipWith joinRep x y)
 joinRep x _ = x
 
-getSettings :: CWString -> IO LibPandocSettings
+getSettings :: CString -> IO LibPandocSettings
 getSettings settings
     | settings == nullPtr = 
         return defaultLibPandocSettings
     | otherwise =
         do let dS = defaultLibPandocSettings
-           s <- peekCWString settings
+           s <- peekCString settings
            case Xml.onlyElems (Xml.parseXML s) of
              (e:_) ->
                  case XG.decodeXml e of
@@ -112,49 +108,14 @@ pandoc :: CPandoc
 pandoc input output settings reader writer = do
   let r = peekReader reader
       w = peekWriter writer
-  i <- peekCWString input
-  o <- peekCWString output
+  i <- peekCString input
+  o <- peekCString output
   s <- getSettings settings
   case (getInputFormat i, getOutputFormat o) of
-    (Nothing, _)            -> newCWString "Invalid input format."
-    (_, Nothing)            -> newCWString "Invalid output format."
+    (Nothing, _)            -> newCString "Invalid input format."
+    (_, Nothing)            -> newCString "Invalid output format."
     (Just read, Just write) ->
         do let run = write (writerOptions s) . read (parserState s)
-           transform run r w
+           transform (8 * 1024) run r w
            return nullPtr
-
-transform :: (String -> String) -> CReader -> CWriter -> IO ()
-transform t reader writer = main where    
-    size :: Num a => a
-    size = 8 * 1024
-    withBuffer action = withCWString (take size $ repeat ' ') action    
-    main = withBuffer $ \rbuf ->
-           withBuffer $ \wbuf ->
-           process rbuf wbuf
-    process rbuf wbuf = do
-      s <- read rbuf
-      write wbuf (t s)
-    read buf = unsafeInterleaveIO r 
-        where
-          r      = reader buf 0 size >>= loop
-          loop 0 = return []
-          loop n = do
-            s <- peekCWStringLen (buf, fromInteger (toInteger n))
-            fmap (s ++) $ read buf
-    write buf text = do
-      let (head, tail) = splitAt size text
-      writeString buf head
-      writer buf 0 $ fromInteger (toInteger (length head))
-      case tail of
-        [] -> return ()
-        _  -> write buf tail
-    writeString buf = pokeArray buf . encodeString
-    encodeString = foldr enc [] . map Char.ord
-        where
-          enc c wcs
-              | c < 0x10000 = fromIntegral c : wcs
-              | otherwise   = 
-                  let c' = c - 0x10000 in
-                  fromIntegral (c' `div` 0x400 + 0xd800) :
-                  fromIntegral (c' `mod` 0x400 + 0xdc00) : wcs
 

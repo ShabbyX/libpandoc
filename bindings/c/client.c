@@ -12,7 +12,7 @@ void std_writer(char* data, int length) {
 }
 
 int main() {
-  pandoc_init();  
+  pandoc_init();
   char* error =
     pandoc(PANDOC_FMT_MARKDOWN,
            PANDOC_FMT_HTML,

@@ -1,18 +1,22 @@
 #include <stdio.h>
 #include <pandoc.h>
 
-/* void test(void) { */
-/*   printf("%s", pandoc(PANDOC_FMT_MARKDOWN, */
-/* 		      "null", */
-/* 		      PANDOC_FMT_HTML, */
-/* 		      "{\"WrapText\": false}", */
-/* 		      "[hello](http://hello.com)")); */
-/* } */
+int reader(char* buf, int offset, int length) {
+  printf("READING %i %i\n", offset, length);
+  int x = fread(buf, 1, length, stdin);
+  printf("READ: %i\n", x);
+  return x;
+}
+
+void writer(char* buf, int offset, int length) {
+  printf("WRITING %i %i\n", offset, length);
+  fwrite(buf, 1, length, stdout);
+}
 
 int main(int argc, char *argv[]) {
   pandoc_init();
-  int x = increase(12);
-  printf("%i\n", x);
-  return 0;
+  pandoc("markdown", "html", "<settings/>", (*reader), (*writer));
+  pandoc_exit();
+  return 0;  
 }
 

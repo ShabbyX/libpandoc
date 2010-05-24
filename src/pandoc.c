@@ -1,8 +1,8 @@
-// extern void __stginit_LibPandoc(void);
-
 #ifdef WIN32
 #include <windows.h>
 #include <Rts.h>
+
+extern void __stginit_LibPandoc(void);
 
 BOOL STDCALL DllMain(HANDLE hModule, DWORD reason, void* reserved) 
 {
@@ -31,7 +31,6 @@ void pandoc_init()
   static char* args[] = {"libpandoc"};
   char** argv = args;
   hs_init(&argc, &argv);
-  //  hs_add_root(__stginit_LibPandoc);
 }
 
 void pandoc_exit()
@@ -40,5 +39,3 @@ void pandoc_exit()
 }
 
 #endif
-
-
