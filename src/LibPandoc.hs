@@ -1,16 +1,15 @@
-{-# LANGUAGE ForeignFunctionInterface, TemplateHaskell #-}
+{-# LANGUAGE ForeignFunctionInterface #-}
 
 -- | Provides FFI interface to Pandoc.
 module LibPandoc (pandoc, LibPandocSettings(..), defaultLibPandocSettings) where
 
-import Data.Data
-import Data.DeriveTH
 import Foreign
 import Foreign.C.String
 import Foreign.C.Types
+import LibPandoc.Instances
+import LibPandoc.Settings
 import System.IO.Unsafe
 import Text.Pandoc
-import Text.Pandoc.Shared
 import qualified Data.Char as Char
 import qualified Data.Map as Map
 import qualified Data.Generics.Rep as Rep
@@ -28,9 +27,13 @@ type CPandoc = CWString -> CWString -> CWString
              -> FunPtr CReader -> FunPtr CWriter
              -> IO CWString
 
-foreign export ccall "pandoc"  pandoc     :: CPandoc
+foreign export ccall "pandoc" pandoc     :: CPandoc
+foreign export ccall "increase" increase :: CInt -> IO CInt
 foreign import ccall "dynamic" peekReader :: FunPtr CReader -> CReader
 foreign import ccall "dynamic" peekWriter :: FunPtr CWriter -> CWriter
+
+increase :: CInt -> IO CInt
+increase x = return (x + 1)
 
 readXml :: ParserState -> String -> Pandoc
 readXml state xml = 
@@ -74,14 +77,6 @@ getOutputFormat x =
       "xml"          -> Just writeXml
       _              -> Nothing
 
-data LibPandocSettings =
-    LibPandocSettings { writerOptions :: WriterOptions
-                      , parserState   :: ParserState
-                      }
-
-defaultLibPandocSettings :: LibPandocSettings
-defaultLibPandocSettings = 
-    LibPandocSettings defaultWriterOptions defaultParserState
 
 joinRep :: Rep.ValueRep -> Rep.ValueRep -> Rep.ValueRep
 joinRep (Rep.ValueRep name (Left x)) (Rep.ValueRep _ (Left y)) =
@@ -162,21 +157,4 @@ transform t reader writer = main where
                   let c' = c - 0x10000 in
                   fromIntegral (c' `div` 0x400 + 0xd800) :
                   fromIntegral (c' `mod` 0x400 + 0xdc00) : wcs
-
-$( derive makeTypeable ''LibPandocSettings )
-$( derive makeData ''LibPandocSettings )
-$( derive makeTypeable ''ParserState )
-$( derive makeData ''ParserState )
-$( derive makeTypeable ''WriterOptions )
-$( derive makeData ''WriterOptions )
-$( derive makeTypeable ''ParserContext )
-$( derive makeData ''ParserContext )
-$( derive makeTypeable ''QuoteContext )
-$( derive makeData ''QuoteContext )
-$( derive makeTypeable ''HeaderType )
-$( derive makeData ''HeaderType )
-$( derive makeTypeable ''HTMLMathMethod )
-$( derive makeData ''HTMLMathMethod )
-$( derive makeTypeable ''ObfuscationMethod )
-$( derive makeData ''ObfuscationMethod )
 

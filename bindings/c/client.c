@@ -2,12 +2,12 @@
 #include "pandoc.h"
 
 int std_reader(char* data, int length) {
-  printf("\nREADING\n");
+  printf("\nREADING - %i\n", length);
   return fread(data, 1, length, stdin);
 }
 
 void std_writer(char* data, int length) {
-  printf("\nWRITING\n");
+  printf("\nWRITING - %i\n", length);
   fwrite(data, 1, length, stdout);
 }
 
@@ -16,7 +16,7 @@ int main() {
   char* error =
     pandoc(PANDOC_FMT_MARKDOWN,
            PANDOC_FMT_HTML,
-           PANDOC_FLAG_TOC | PANDOC_FLAG_STANDALONE,
+           PANDOC_TOC | PANDOC_WRITE_STANDALONE,
            NULL,
            *std_reader,
            *std_writer);
