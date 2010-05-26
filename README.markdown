@@ -1,13 +1,25 @@
-% `libpandoc`
+# `libpandoc`
 
-The purpose of `libpandoc` is to make the [Haskell][1] library
-[Pandoc][2] available for use from C and other non-Haskell
+The purpose of `libpandoc` is to make the [Haskell][haskell] library
+[Pandoc][pandoc] available for use from C and other non-Haskell
 environments that support C FFI.  Pandoc and (`libpandoc`) support
 text conversion between HTML, Markdown, LaTeX, OpenDocument and other
 formats.
 
 
-# C Interface
+## Obtaining
+
+The latest version is available (BSD license) at [GitHub][libpandoc].
+
+
+## Installation
+
+See `INSTALL`.
+
+
+## Using
+
+### C Interface
 
 The C interface is defined in `src/pandoc.h`. Synopsis:
 
@@ -23,8 +35,7 @@ The C interface is defined in `src/pandoc.h`. Synopsis:
 Haskell runtime has to be started and stopped explicitly via the
 `init/exit` functions.
 
-
-## Input and Output Formats
+#### Input and Output Formats
 
 Input and output formats depend on Pandoc version the library is built
 against.  They are passed as strings.  Possible values include:
@@ -47,8 +58,7 @@ against.  They are passed as strings.  Possible values include:
 In addition, an automatically derived `xml` format is provided for
 both input and output.
 
-
-## XML Settings
+#### XML Settings
 
 The settings parameter allows to customize the text transformation by
 passing Pandoc settings as an XML-encoded string.  The XML format is
@@ -179,15 +189,24 @@ fields that have non-default values have to be provided.
       </field>
     </record>
 
+### Other Interfaces
 
-# Other Interfaces
-
-  * [libpandoc-dotnet][3]
-
-
-# Configuration
+  * A .NET/C# interface is available as [libpandoc-dotnet][libpandoc-dotnet].
 
 
-[1]: http://www.haskell.org
-[2]: http://johnmacfarlane.net/pandoc/
-[3]: http://github.com/toyvo/libpandoc-dotnet
+## Changelog
+
+  * 0.5 - Implemented XML generics to support all config settings.
+
+
+## Authors
+
+Anton Tayanovskyy <name.surname@gmail.com>.  Bug reports and feature
+requests are welcome.
+
+
+
+[haskell]:          http://www.haskell.org
+[pandoc]:           http://johnmacfarlane.net/pandoc/
+[libpandoc]:        http://github.com/toyvo/libpandoc/
+[libpandoc-dotnet]: http://github.com/toyvo/libpandoc-dotnet/
