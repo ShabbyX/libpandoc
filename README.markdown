@@ -13,8 +13,53 @@ The latest version is available (BSD license) at [GitHub][libpandoc].
 
 
 ## Installation
+ 
+### Building
 
-See `INSTALL`.
+Building follows standard Haskell conventions and requires the
+[Haskell Platform][haskell-platform]:
+
+    # runhaskell Setup.lhs configure [--user]
+    # runhaskell Setup.lhs build    
+ 
+The configure stage may report missing dependencies.  These can be
+obtained as follows:
+
+    # cabal install [dependency]
+
+A successful build creates the shared library file in
+`./dist/build/libpandoc.dll/libpandoc.dll`.  Installation and use of
+the library is platform-dependent.
+
+[haskell-platform]: http://hackage.haskell.org/platform/
+
+### UNIX Installation
+
+For your convenience, an `./install.sh` is provided that installs the
+shared object and header files under `/usr/local`.  It has been tested
+on Ubuntu Linux.
+
+To install system-wide in the `$LIB` folder, copy `libpandoc.dll` to
+`$LIB/libpandoc.so` and run `ldconfig $LIB`.  Also, copy
+`src/pandoc.h` to `$INCLUDES/`.
+ 
+To use the library from C, do:
+
+    #include <pandoc.h>
+    pandoc(...)
+
+And compile as:
+
+    gcc -lpandoc [my-file.c]
+
+### Windows Installation
+ 
+For your convenience, an `./install.bat` is provided that installs the
+shared library under `%windir%\System32`.
+
+Deploy the shared library in the same folder as your application, or
+put it under `%PATH%`.  Intallation of header files depends on the C
+compiler.
 
 
 ## Using
