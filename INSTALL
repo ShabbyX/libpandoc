@@ -1,43 +1,55 @@
-Building libpandoc on Ubuntu
-----------------------------
+% `libpandoc` Installation
 
-First install some packages. YMMV - I probably already had a couple of
-needed dependencies installed, such as `build-essentials`.
-
-    sudo apt-get install ghc6 haskell-devscripts libghc6-network-dev \
-        libghc6-parsec-dev libghc6-mtl-dev
-
-Go to http://haskell.org/cabal/release/cabal-install-latest/ and grab
-the latest.
-
-    tar xfz cabal-install-X.X.X.tar.gz
-    cd cabal-install-X.X.X
-    ./bootstrap.sh
-
-Grab a cup of coffee.
-
-When it's done, you just need to link the `cabal` binary.
-
-    cd
-    mkdir -p bin
-    cd bin
-    ln -s ~/.cabal/bin/cabal cabal
-
-Alternatively, add ~/.cabal/bin to your path.
-
-Use cabal to install the required packages:
-
-    cabal update
-    cabal install json
-    cabal install pandoc
-
-To enable extra features of Pandoc:
-
-    cabal install pandoc -fhighlighting -fciteproc
-
-And finally, we can build the binary:
-
-    cd /path/to/libpandoc
-    make
+This note contains build and installation instructions for the
+`libpandoc` shared library.  See `README.markdown` for more
+information.
 
 
+# Building
+
+Building follows standard Haskell conventions and requires the
+[Haskell Platform][haskell-platform]:
+
+    # runhaskell Setup.lhs configure [--user]
+    # runhaskell Setup.lhs build    
+ 
+The configure stage may report missing dependencies.  These can be
+obtained as follows:
+
+    # cabal install [dependency]
+
+A successful build creates the shared library file in
+`./dist/build/libpandoc.dll/libpandoc.dll`.  Installation and use of
+the library is platform-dependent.
+
+[haskell-platform]: http://hackage.haskell.org/platform/
+
+
+# UNIX Installation
+
+For your convenience, an `./install.sh` is provided that installs the
+shared object and header files under `/usr/local`.  It has been tested
+on Ubuntu Linux.
+
+To install system-wide in the `$LIB` folder, copy `libpandoc.dll` to
+`$LIB/libpandoc.so` and run `ldconfig $LIB`.  Also, copy
+`src/pandoc.h` to `$INCLUDES/`.
+ 
+To use the library from C, do:
+
+    #include <pandoc.h>
+    pandoc(...)
+
+And compile as:
+
+    gcc -lpandoc [my-file.c]
+
+
+# Windows Installation
+ 
+For your convenience, an `./install.bat` is provided that installs the
+shared library under `%windir%\System32`.
+
+Deploy the shared library in the same folder as your application, or
+put it under `%PATH%`.  Intallation of header files depends on the C
+compiler.
