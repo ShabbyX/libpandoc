@@ -17,9 +17,8 @@ import qualified Data.Generics.Rep as Rep
 import qualified Text.XML.Light as Xml
 import qualified Text.XML.Light.Generic as XG
 
-
 -- | The type of the main entry point.
-type CPandoc = CString -> CString -> CString 
+type CPandoc = CInt -> CString -> CString -> CString 
              -> FunPtr CReader -> FunPtr CWriter
              -> IO CString
 
@@ -105,7 +104,7 @@ getSettings settings
              _ -> return dS
            
 pandoc :: CPandoc
-pandoc input output settings reader writer = do
+pandoc bufferSize input output settings reader writer = do
   let r = peekReader reader
       w = peekWriter writer
   i <- peekCString input
@@ -116,6 +115,8 @@ pandoc input output settings reader writer = do
     (_, Nothing)            -> newCString "Invalid output format."
     (Just read, Just write) ->
         do let run = write (writerOptions s) . read (parserState s)
-           transform (8 * 1024) run r w
+           transform (decodeInt bufferSize) run r w
            return nullPtr
 
+decodeInt :: CInt -> Int
+decodeInt = fromInteger . toInteger

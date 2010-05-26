@@ -14,10 +14,8 @@ extern void pandoc_exit();
    on failure.  Settings is an XML string conforming to a schema
    distributed with `libpandoc`.  Settings can be `NULL`.  All strings
    should be encoded as UTF-8.  */
-extern char* pandoc(char* input_format,
-                    char* output_format,
-                    char* settings,
-                    int (*reader)(char*, int, int),
-                    void (*writer)(char*, int, int));
+extern char* pandoc(int buffer_size,
+                    char* input_format, char* output_format, char* settings,
+                    int (*reader)(char*), void (*writer)(char*, int));
 
 #endif /* !_PANDOC_H */
