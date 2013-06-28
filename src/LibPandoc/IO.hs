@@ -28,7 +28,7 @@ transform bufferSize transformer reader writer =
     do s <- readStream rbuf reader
        writeStream wbuf writer (transformer s)
 
-newtype Buffer = Buffer (CString, Int) 
+newtype Buffer = Buffer (CString, Int)
 
 withBuffer :: Int -> (Buffer -> IO a) -> IO a
 withBuffer bufferSize action = withCString init act where

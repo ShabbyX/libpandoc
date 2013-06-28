@@ -28,14 +28,14 @@ toRep :: D.Data d => d -> ValueRep
 toRep d = rep where
     tR        = T.typeOf d
     tC        = tyConOf d
-    constr    = D.toConstr d 
+    constr    = D.toConstr d
     constrRep = D.showConstr constr
     labels [] = repeat Nothing
     labels xs = map Just xs
     fieldsRep = mkFR (D.constrFields constr) (D.gmapQ toRep d)
     mkFR [] x = Right x
     mkFR x y  = Left (zip x y)
-    
+
     rep | tR == integerTR = IntegerRep (cast d)
         | tR == intTR     = IntegerRep (toInteger (cast d :: Int))
         | tR == boolTR    = IntegerRep (toInteger (fromEnum (cast d :: Bool)))
@@ -65,21 +65,21 @@ ofRep d = result where
         | tR == intTR     = T.cast (fromInteger x :: Int)
         | tR == boolTR    = T.cast (x /= 0)
         | otherwise       = Nothing
-    read (StringRep x) 
+    read (StringRep x)
         | tR == stringTR = T.cast x
         | otherwise      = Nothing
     read (ListRep xs)
-        | tC == listTC = ofList xs 
+        | tC == listTC = ofList xs
         | otherwise    = Nothing
         where
           nil           = D.indexConstr dT 1
           cons          = D.indexConstr dT 2
           ofList []     = apply nil []
           ofList (x:xs) = apply cons p where p = [x, ListRep xs]
-    read (TupleRep xs) 
+    read (TupleRep xs)
         | tupleTCSize tC == Just (length xs) = apply (D.indexConstr dT 1) xs
         | otherwise                          = Nothing
-    read (ValueRep constrName fields) = 
+    read (ValueRep constrName fields) =
         do constr <- D.readConstr dT constrName
            case fields of
              Right values ->
@@ -94,7 +94,7 @@ ofRep d = result where
 
     apply constr xs = result where
         Just x               = result
-        A (_, result)        = D.gunfold f z constr 
+        A (_, result)        = D.gunfold f z constr
         z x                  = A (xs, Just x)
         f (A (x:xs, Just g)) = A (xs, fmap g (ofRep x))
         f _                  = A ([], Nothing)

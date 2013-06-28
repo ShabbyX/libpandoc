@@ -3,14 +3,15 @@
 module LibPandoc.Settings where
 
 import Data.Data
+import Data.Default
 import LibPandoc.Instances
 import Text.Pandoc
 
 data LibPandocSettings =
     LibPandocSettings { writerOptions :: WriterOptions
-                      , parserState   :: ParserState
+                      , readerOptions :: ReaderOptions
                       } deriving (Data, Typeable)
 
 defaultLibPandocSettings :: LibPandocSettings
-defaultLibPandocSettings = 
-    LibPandocSettings defaultWriterOptions defaultParserState
+defaultLibPandocSettings =
+    LibPandocSettings (def WriterOptions) (def ReaderOptions)

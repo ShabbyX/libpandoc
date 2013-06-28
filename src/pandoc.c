@@ -4,9 +4,9 @@
 
 extern void __stginit_LibPandoc(void);
 
-BOOL STDCALL DllMain(HANDLE hModule, DWORD reason, void* reserved) 
+BOOL STDCALL DllMain(HANDLE hModule, DWORD reason, void *reserved)
 {
-  static char* args[] = {"libpandoc", NULL};
+  static char *args[] = {"libpandoc", NULL};
   if (reason == DLL_PROCESS_ATTACH) {
     startupHaskell(1, args, __stginit_LibPandoc);
   }
@@ -28,8 +28,9 @@ void pandoc_exit()
 void pandoc_init()
 {
   int argc = 1;
-  static char* args[] = {"libpandoc"};
-  char** argv = args;
+  static char arg0[] = "libpandoc";
+  static char *args[] = {arg0};
+  char **argv = args;
   hs_init(&argc, &argv);
 }
 
