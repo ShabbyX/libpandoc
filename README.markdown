@@ -69,16 +69,35 @@ compiler.
 The C interface is defined in `src/pandoc.h`. Synopsis:
 
     pandoc_init();
-    char* error = pandoc(1024 /* buffer size */,
+    char* error = pandoc(1024       /* buffer size */,
                          "markdown" /* input format */,
-                         "html" /* output format */,
-                         NULL /* XML settings */,
-                         reader,
-                         writer);
+                         "html"     /* output format */,
+                         NULL       /* XML settings */,
+                         reader     /* the reader function */,
+                         writer     /* the writer function */,
+			 user_data  /* private user data */);
     pandoc_exit();
 
 Haskell runtime has to be started and stopped explicitly via the
 `init/exit` functions.
+
+The reader function is in the following form:
+
+    int reader(char *buf, void *user_data);
+
+Where `buf` is the buffer to be filled.  The size of this buffer is the same
+as provided as the first argument to the `pandoc` function.  `user_data` is
+the same pointer passed as the last argument of the `pandoc` function.  The
+reader function must fill the buffer with the input to be converted by pandoc.
+
+The writer function is in the following form:
+
+    void writer(char *buf, int len, void *user_data);
+
+Where `buf` is the buffer to be written, `len` is the number of elements in
+the buffer and `user_data` is the last argument of the `pandoc` function,
+similar to `user_data` of the reader.  The writer function must write the
+contents of the buffer as the output of the conversion by pandoc.
 
 #### Input and Output Formats
 
