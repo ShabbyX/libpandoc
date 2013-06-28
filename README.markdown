@@ -75,7 +75,7 @@ The C interface is defined in `src/pandoc.h`. Synopsis:
                          NULL       /* XML settings */,
                          reader     /* the reader function */,
                          writer     /* the writer function */,
-			 user_data  /* private user data */);
+                         user_data  /* private user data */);
     pandoc_exit();
 
 Haskell runtime has to be started and stopped explicitly via the
@@ -205,7 +205,7 @@ fields that have non-default values have to be provided.
             <int>1</int>
           </field>
           <field name="writerColumns">
-            <int>80</int>	<!-- TODO: unsure -->
+            <int>80</int>       <!-- TODO: unsure -->
           </field>
           <field name="writerLiterateHaskell">
             <int>0</int>
@@ -271,7 +271,7 @@ fields that have non-default values have to be provided.
             <list />
           </field>
           <field name="writerEpubChapterLevel">
-            <int>3</int>	<!-- TODO: unsure -->
+            <int>3</int>        <!-- TODO: unsure -->
           </field>
           <field name="writerTOCDepth">
             <int>3</int>

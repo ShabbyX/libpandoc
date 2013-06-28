@@ -21,6 +21,6 @@ extern void pandoc_exit();
 extern char *pandoc(int buffer_size,
                     char *input_format, char *output_format, char *settings,
                     int (*reader)(char *, void *), void (*writer)(char *, int, void *),
-		    void *user_data);
+                    void *user_data);
 
 #endif /* !_PANDOC_H */
