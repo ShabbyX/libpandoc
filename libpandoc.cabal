@@ -1,27 +1,27 @@
 Name:                   libpandoc
-Version:                0.6
+Version:                0.7
 Cabal-Version:          >= 1.2
 License:                BSD3
-Author:                 Anton Tayanovskyy
-Maintainer:             Anton Tayanovskyy <name.surname@gmail.com>
+Author:                 Anton Tayanovskyy <name.surname@gmail.com>
+Maintainer:             Shahbaz Youssefi <shabbyx@gmail.com>
 Synopsis:               Pandoc as a shared object or DLL.
 Build-Type:             Simple
 Executable libpandoc.dll
   If os(windows)
     CPP-Options:        -DWIN32
   Extensions:           ForeignFunctionInterface
-  Build-Depends:        base              >= 4.1,
-                        containers        >= 0.2,
-                        derive            >= 2.3,
-                        pandoc            >= 1.10,
-                        mtl               >= 1.1,
-                        binary            >= 0.5,
+  Build-Depends:        base              >= 4.6,
+                        containers        >= 0.5,
+                        pandoc            >= 1.13.3,
+                        pandoc-types      >= 1.12.4,
+                        mtl               >= 2.1,
+                        binary            >= 0.7,
                         digest            >= 0.0,
                         xml               >= 1.3,
                         utf8-string       >= 0.3,
                         highlighting-kate >= 0.5,
                         data-default      >= 0.5,
-                        bytestring        >= 0.9
+                        bytestring        >= 0.10
   Hs-Source-Dirs:       src
   Include-Dirs:         src
   C-Sources:            src/pandoc.c

@@ -19,8 +19,8 @@ The latest version is available (BSD license) at [GitHub][libpandoc].
 Building follows standard Haskell conventions and requires the
 [Haskell Platform][haskell-platform]:
 
-    # runhaskell Setup.lhs configure [--user]
-    # runhaskell Setup.lhs build
+    # cabal configure [--global]
+    # cabal build
 
 The configure stage may report missing dependencies.  These can be
 obtained as follows:
@@ -50,7 +50,7 @@ To use the library from C, do:
 
 And compile as:
 
-    gcc -lpandoc [my-file.c]
+    gcc [my-file.c] -lpandoc
 
 ### Windows Installation
 
@@ -331,23 +331,28 @@ fields that have non-default values have to be provided.
 
 ### Other Interfaces
 
-  * A .NET/C# interface is available as [libpandoc-dotnet][libpandoc-dotnet].
+  * A .NET/C# interface is available as [libpandoc-dotnet][libpandoc-dotnet]
+    (probably outdated).
 
 
 ## Changelog
 
+  * 0.7 - Updated to pandoc version 1.13 and higher
   * 0.6 - Updated to pandoc version 1.10 and higher
   * 0.5 - Implemented XML generics to support all config settings.
 
 
 ## Authors
 
-Anton Tayanovskyy <name.surname@gmail.com>.  Bug reports and feature
-requests are welcome.
+Original author is Anton Tayanovskyy <name.surname@gmail.com>, but he seems to be
+inactive regarding libpandoc.
+
+Shahbaz Youssefi <shabbyx@gmail.com> is the current maintainer.  Bug reports and
+feature requests are welcome.
 
 
 
 [haskell]:          http://www.haskell.org
 [pandoc]:           http://johnmacfarlane.net/pandoc/
-[libpandoc]:        http://github.com/toyvo/libpandoc/
+[libpandoc]:        http://github.com/ShabbyX/libpandoc/
 [libpandoc-dotnet]: http://github.com/toyvo/libpandoc-dotnet/

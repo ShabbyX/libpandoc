@@ -1,10 +1,9 @@
-{-# OPTIONS -XDeriveDataTypeable #-}
+{-# LANGUAGE DeriveDataTypeable #-}
 
 module LibPandoc.Settings where
 
 import Data.Data
 import Data.Default
-import LibPandoc.Instances
 import Text.Pandoc
 
 data LibPandocSettings =

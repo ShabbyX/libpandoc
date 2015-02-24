@@ -6,7 +6,6 @@ module LibPandoc (pandoc, LibPandocSettings(..), defaultLibPandocSettings) where
 import Foreign
 import Foreign.C.String
 import Foreign.C.Types
-import LibPandoc.Instances
 import LibPandoc.IO
 import LibPandoc.Settings
 import System.IO.Unsafe
