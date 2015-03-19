@@ -9,7 +9,9 @@ formats.
 
 ## Obtaining
 
-The latest version is available (BSD license) at [GitHub][libpandoc].
+The latest version is available at [GitHub][libpandoc].  `libpandoc`
+is licensed under BSD3.  Note that Pandoc itself is licensed under
+GPLv2+.
 
 
 ## Installation
