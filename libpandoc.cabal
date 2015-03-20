@@ -2,6 +2,7 @@ Name:                   libpandoc
 Version:                0.7
 Cabal-Version:          >= 1.2
 License:                BSD3
+			-- Note: Pandoc's own license is GPLv2+
 Author:                 Anton Tayanovskyy <name.surname@gmail.com>
 Maintainer:             Shahbaz Youssefi <shabbyx@gmail.com>
 Synopsis:               Pandoc as a shared object or DLL.

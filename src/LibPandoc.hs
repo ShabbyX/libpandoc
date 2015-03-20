@@ -1,4 +1,11 @@
 {-# LANGUAGE ForeignFunctionInterface #-}
+{-
+ - Copyright (C) 2009-2010  Anton Tayanovskyy <name.surname@gmail.com>
+ -
+ - This file is part of libpandoc, providing C bindings to Pandoc.
+ - libpandoc is licensed under BSD 3-clause.  However, note that Pandoc
+ - itself is licensed under GPL version 2 or later.
+ -}
 
 -- | Provides FFI interface to Pandoc.
 module LibPandoc (pandoc, LibPandocSettings(..), defaultLibPandocSettings) where
