@@ -31,13 +31,14 @@ void pandoc_exit()
 }
 
 #else
+#include <stdlib.h>
 #include <HsFFI.h>
 
 void pandoc_init()
 {
   int argc = 1;
   static char arg0[] = "libpandoc";
-  static char *args[] = {arg0};
+  static char *args[] = {arg0, NULL};
   char **argv = args;
   hs_init(&argc, &argv);
 }
