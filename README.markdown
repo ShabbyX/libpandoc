@@ -10,8 +10,8 @@ formats.
 ## Obtaining
 
 The latest version is available at [GitHub][libpandoc].  `libpandoc`
-is licensed under BSD3.  Note that Pandoc itself is licensed under
-GPLv2+.
+is licensed under GPL version 2 or later, which is also Pandoc's
+license.
 
 
 ## Installation
@@ -60,7 +60,7 @@ For your convenience, an `./install.bat` is provided that installs the
 shared library under `%windir%\System32`.
 
 Deploy the shared library in the same folder as your application, or
-put it under `%PATH%`.  Intallation of header files depends on the C
+put it under `%PATH%`.  Installation of header files depends on the C
 compiler.
 
 
@@ -90,16 +90,16 @@ The reader function is in the following form:
 Where `buf` is the buffer to be filled.  The size of this buffer is the same
 as provided as the first argument to the `pandoc` function.  `user_data` is
 the same pointer passed as the last argument of the `pandoc` function.  The
-reader function must fill the buffer with the input to be converted by pandoc.
+reader function must fill the buffer with the input to be converted by Pandoc.
 
 The writer function is in the following form:
 
-    void writer(char *buf, int len, void *user_data);
+    void writer(const char *buf, int len, void *user_data);
 
 Where `buf` is the buffer to be written, `len` is the number of elements in
 the buffer and `user_data` is the last argument of the `pandoc` function,
 similar to `user_data` of the reader.  The writer function must write the
-contents of the buffer as the output of the conversion by pandoc.
+contents of the buffer as the output of the conversion by Pandoc.
 
 #### Input and Output Formats
 
@@ -143,7 +143,7 @@ against.  They are passed as strings.  Possible values include:
 In addition, an automatically derived `xml` format is provided for
 both input and output.
 
-Note: Some read and write types supported by pandoc striked above are not yet
+Note: Some read and write types supported by Pandoc striked above are not yet
 supported by libpandoc.
 
 #### XML Settings
@@ -339,19 +339,17 @@ fields that have non-default values have to be provided.
 
 ## Changelog
 
-  * 0.7 - Updated to pandoc version 1.13 and higher
-  * 0.6 - Updated to pandoc version 1.10 and higher
+  * 0.7 - Updated to Pandoc version 1.13 and higher
+  * 0.6 - Updated to Pandoc version 1.10 and higher
   * 0.5 - Implemented XML generics to support all config settings.
 
 
 ## Authors
 
-Original author is Anton Tayanovskyy <name.surname@gmail.com>, but he seems to be
-inactive regarding libpandoc.
+Original author is Anton Tayanovskyy <name.surname@gmail.com>.
 
 Shahbaz Youssefi <shabbyx@gmail.com> is the current maintainer.  Bug reports and
 feature requests are welcome.
-
 
 
 [haskell]:          http://www.haskell.org
