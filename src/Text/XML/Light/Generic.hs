@@ -1,14 +1,15 @@
 module Text.XML.Light.Generic (encodeXml, decodeXml, toXml, ofXml) where
 
-import qualified Data.Data as Data
-import qualified Control.Monad as CM
+import qualified Control.Monad     as CM
+import qualified Data.Data         as Data
 import qualified Data.Generics.Rep as Rep
-import qualified Text.XML.Light as Xml
+import qualified Text.XML.Light    as Xml
 
-(-@-) a b = Xml.Attr (Xml.unqual a) b
+(-@-) :: String -> String -> Xml.Attr
+(-@-) = Xml.Attr . Xml.unqual
 
 toXml :: Data.Data d => d -> Xml.Element
-toXml d = encodeXml (Rep.toRep d)
+toXml = encodeXml . Rep.toRep
 
 ofXml :: Data.Data d => Xml.Element -> Maybe d
 ofXml xml = decodeXml xml >>= Rep.ofRep
@@ -38,9 +39,9 @@ decodeXml e@(Xml.Element (Xml.QName name _ _) _ _ _) = dec name where
           _ ->
               Nothing
     field _      = Nothing
-    value        = Xml.strContent $ e
+    value        = Xml.strContent e
     dataName     = getName e
-    read x       = case reads x of
+    read x       = case reads (x :: String) of
                      [(value, "")] -> Just value
                      _             -> Nothing
     dec "int"    = fmap Rep.IntegerRep (read value)
