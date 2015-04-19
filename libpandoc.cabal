@@ -28,4 +28,4 @@ Executable libpandoc.dll
   Install-Includes:     pandoc.h
   Main-Is:              LibPandoc.hs
   CC-Options:           -fPIC
-  Ghc-Options:          -no-hs-main -fPIC -shared -dynamic
+  Ghc-Options:          -no-hs-main -dynamic -shared -lHSrts-$compiler
