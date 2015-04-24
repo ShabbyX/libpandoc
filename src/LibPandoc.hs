@@ -22,19 +22,21 @@
 -- | Provides FFI interface to Pandoc.
 module LibPandoc (pandoc, LibPandocSettings(..), defaultLibPandocSettings) where
 
-import Foreign
-import Foreign.C.String
-import Foreign.C.Types
-import LibPandoc.IO
-import LibPandoc.Settings
-import System.IO.Unsafe
-import Text.Pandoc
+import           Control.Arrow              ((>>>))
 import qualified Data.ByteString.Lazy.Char8 as BLC
-import qualified Data.Char as Char
-import qualified Data.Map as Map
-import qualified Data.Generics.Rep as Rep
-import qualified Text.XML.Light as Xml
-import qualified Text.XML.Light.Generic as XG
+import qualified Data.Char                  as Char
+import qualified Data.Generics.Rep          as Rep
+import qualified Data.Map                   as Map
+import           Foreign
+import           Foreign.C.String
+import           Foreign.C.Types
+import           LibPandoc.IO
+import           LibPandoc.Settings
+import           System.IO.Unsafe
+import           Text.Pandoc
+import           Text.Pandoc.Error
+import qualified Text.XML.Light             as Xml
+import qualified Text.XML.Light.Generic     as XG
 
 -- | The type of the main entry point.
 type CPandoc = CInt -> CString -> CString -> CString
@@ -49,23 +51,23 @@ foreign import ccall "dynamic" peekWriter :: FunPtr CWriter -> CWriter
 increase :: CInt -> IO CInt
 increase x = return (x + 1)
 
-readXml :: ReaderOptions -> String -> Pandoc
+readXml :: ReaderOptions -> String -> Either PandocError Pandoc
 readXml state xml =
-    let failed = readMarkdown state "Failed to parse XML." in
+    let failed = Left $ ParseFailure "Failed to parse XML." in
     case Xml.onlyElems (Xml.parseXML xml) of
       (elem : _) ->
           case XG.ofXml elem of
-            Just pandoc -> pandoc
+            Just pandoc -> Right pandoc
             Nothing     -> failed
       _ -> failed
 
 writeXml :: WriterOptions -> Pandoc -> String
 writeXml options pandoc = Xml.ppElement (XG.toXml pandoc)
 
-readNativeWrapper :: ReaderOptions -> String -> Pandoc
-readNativeWrapper options s = readNative s
+readNativeWrapper :: ReaderOptions -> String -> Either PandocError Pandoc
+readNativeWrapper options = readNative
 
-getInputFormat :: String -> Maybe (ReaderOptions -> String -> Pandoc)
+getInputFormat :: String -> Maybe (ReaderOptions -> String -> Either PandocError Pandoc)
 getInputFormat x =
     case map Char.toLower x of
       "docbook"    -> Just readDocBook
@@ -147,9 +149,9 @@ pandoc bufferSize input output settings reader writer userData = do
     (Nothing, _)            -> newCString "Invalid input format."
     (_, Nothing)            -> newCString "Invalid output format."
     (Just read, Just write) ->
-        do let run = write (writerOptions s) . read (readerOptions s)
-           transform (decodeInt bufferSize) run r w userData
-           return nullPtr
+      do let run = read (readerOptions s) >>> handleError >>> write (writerOptions s)
+         transform (decodeInt bufferSize) run r w userData
+         return nullPtr
 
 decodeInt :: CInt -> Int
 decodeInt = fromInteger . toInteger

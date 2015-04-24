@@ -91,6 +91,8 @@ Where `buf` is the buffer to be filled.  The size of this buffer is the same
 as provided as the first argument to the `pandoc` function.  `user_data` is
 the same pointer passed as the last argument of the `pandoc` function.  The
 reader function must fill the buffer with the input to be converted by Pandoc.
+The return value is the number of characters read. The reader is no longer called
+when this value is zero
 
 The writer function is in the following form:
 

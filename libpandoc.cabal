@@ -1,7 +1,7 @@
 Name:                   libpandoc
 Version:                0.7
 Cabal-Version:          >= 1.2
-License:                GPLv2+
+License:                GPL
 Author:                 Anton Tayanovskyy <name.surname@gmail.com>
 Maintainer:             Shahbaz Youssefi <shabbyx@gmail.com>
 Synopsis:               Pandoc as a shared object or DLL.
@@ -27,4 +27,5 @@ Executable libpandoc.dll
   C-Sources:            src/pandoc.c
   Install-Includes:     pandoc.h
   Main-Is:              LibPandoc.hs
-  Ghc-Options:          -no-hs-main -optl-shared -optl-s
+  CC-Options:           -fPIC
+  Ghc-Options:          -no-hs-main -dynamic -shared -lHSrts-ghc$compiler
