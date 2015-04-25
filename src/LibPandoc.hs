@@ -23,10 +23,12 @@
 module LibPandoc (pandoc, LibPandocSettings(..), defaultLibPandocSettings) where
 
 import           Control.Arrow              ((>>>))
+import           Control.Monad.Except       (MonadError(..))
 import qualified Data.ByteString.Lazy.Char8 as BLC
 import qualified Data.Char                  as Char
-import qualified Data.Generics.Rep          as Rep
+import qualified Data.List                  as List
 import qualified Data.Map                   as Map
+import           Data.Maybe
 import           Foreign
 import           Foreign.C.String
 import           Foreign.C.Types
@@ -35,8 +37,8 @@ import           LibPandoc.Settings
 import           System.IO.Unsafe
 import           Text.Pandoc
 import           Text.Pandoc.Error
-import qualified Text.XML.Light             as Xml
-import qualified Text.XML.Light.Generic     as XG
+import           Text.JSON
+import           Text.JSON.Generic         (toJSON,fromJSON)
 
 -- | The type of the main entry point.
 type CPandoc = CInt -> CString -> CString -> CString
@@ -50,19 +52,6 @@ foreign import ccall "dynamic" peekWriter :: FunPtr CWriter -> CWriter
 
 increase :: CInt -> IO CInt
 increase x = return (x + 1)
-
-readXml :: ReaderOptions -> String -> Either PandocError Pandoc
-readXml state xml =
-    let failed = Left $ ParseFailure "Failed to parse XML." in
-    case Xml.onlyElems (Xml.parseXML xml) of
-      (elem : _) ->
-          case XG.ofXml elem of
-            Just pandoc -> Right pandoc
-            Nothing     -> failed
-      _ -> failed
-
-writeXml :: WriterOptions -> Pandoc -> String
-writeXml options pandoc = Xml.ppElement (XG.toXml pandoc)
 
 readNativeWrapper :: ReaderOptions -> String -> Either PandocError Pandoc
 readNativeWrapper options = readNative
@@ -79,7 +68,7 @@ getInputFormat x =
       "rst"        -> Just readRST
 --      "texmath"    -> Just readTeXMath  TODO: disabled until I figure out how to convert it to ReaderOptions -> String -> Pandoc
       "textile"    -> Just readTextile
-      "xml"        -> Just readXml
+--      "xml"        -> Just readXml
       _            -> Nothing
 
 getOutputFormat :: String -> Maybe (WriterOptions -> Pandoc -> String)
@@ -104,39 +93,31 @@ getOutputFormat x =
       "rtf"          -> Just writeRTF
       "texinfo"      -> Just writeTexinfo
       "textile"      -> Just writeTextile
-      "xml"          -> Just writeXml
+--      "xml"          -> Just writeXml
       _              -> Nothing
 
 
-joinRep :: Rep.ValueRep -> Rep.ValueRep -> Rep.ValueRep
-joinRep (Rep.ValueRep name (Left x)) (Rep.ValueRep _ (Left y)) =
-    Rep.ValueRep name (Left (Map.toList um)) where
-        xm = Map.fromList x
-        ym = Map.fromList y
-        um = Map.unionWith joinRep xm ym
-joinRep (Rep.ValueRep name (Right x)) (Rep.ValueRep _ (Right y)) =
-    Rep.ValueRep name (Right (zipWith joinRep x y))
-joinRep (Rep.TupleRep x) (Rep.TupleRep y) =
-    Rep.TupleRep (zipWith joinRep x y)
-joinRep (Rep.ListRep x) (Rep.ListRep y) =
-    Rep.ListRep (zipWith joinRep x y)
-joinRep x _ = x
+-- | Gives preferential treatment to first argument (should be user options)
+joinJSON :: JSValue -> JSValue -> JSValue
+joinJSON (JSArray a) (JSArray b) = JSArray (List.zipWith joinJSON a b)
+joinJSON (JSObject a) (JSObject b) =
+  let aMap = Map.fromList . fromJSObject $ a
+      bMap = Map.fromList . fromJSObject $ b
+  in JSObject . toJSObject . Map.toList $ Map.unionWith joinJSON aMap bMap
+joinJSON a _ = a
 
 getSettings :: CString -> IO LibPandocSettings
-getSettings settings
-    | settings == nullPtr =
-        return defaultLibPandocSettings
-    | otherwise =
-        do let dS = defaultLibPandocSettings
-           s <- peekCString settings
-           case Xml.onlyElems (Xml.parseXML s) of
-             (e:_) ->
-                 case XG.decodeXml e of
-                   Nothing  -> return dS
-                   Just rep ->
-                       let r = Rep.toRep dS `joinRep` rep in
-                       return $ maybe dS id (Rep.ofRep r)
-             _ -> return dS
+getSettings settings | settings == nullPtr = return defaultLibPandocSettings
+getSettings settings = do
+  let defaults = defaultLibPandocSettings
+  s <- peekCString settings
+  let userSettings = fromResult . decodeStrict $ s
+      combined     = userSettings `joinJSON` toJSON defaults 
+  return . fromResult . fromJSON $ combined
+  where
+    fromResult :: Result a -> a
+    fromResult (Ok a)    = a
+    fromResult (Error e) = error e
 
 pandoc :: CPandoc
 pandoc bufferSize input output settings reader writer userData = do

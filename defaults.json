@@ -1,0 +1,254 @@
+{
+    "writerOptions": {
+	"writerStandalone": false,
+	"writerTemplate": "",
+	"writerVariables": [],
+	"writerTabStop": 4,
+	"writerTableOfContents": false,
+	"writerSlideVariant": "NoSlides",
+	"writerIncremental": false,
+	"writerHTMLMathMethod": "PlainMath",
+	"writerIgnoreNotes": false,
+	"writerNumberSections": false,
+	"writerNumberOffset": [0, 0, 0, 0, 0, 0],
+	"writerSectionDivs": false,
+	"writerExtensions": [
+	    "Ext_footnotes",
+	    "Ext_inline_notes",
+	    "Ext_pandoc_title_block",
+	    "Ext_yaml_metadata_block",
+	    "Ext_table_captions",
+	    "Ext_implicit_figures",
+	    "Ext_simple_tables",
+	    "Ext_multiline_tables",
+	    "Ext_grid_tables",
+	    "Ext_pipe_tables",
+	    "Ext_citations",
+	    "Ext_raw_tex",
+	    "Ext_raw_html",
+	    "Ext_tex_math_dollars",
+	    "Ext_latex_macros",
+	    "Ext_fenced_code_blocks",
+	    "Ext_fenced_code_attributes",
+	    "Ext_backtick_code_blocks",
+	    "Ext_inline_code_attributes",
+	    "Ext_markdown_in_html_blocks",
+	    "Ext_native_divs",
+	    "Ext_native_spans",
+	    "Ext_escaped_line_breaks",
+	    "Ext_fancy_lists",
+	    "Ext_startnum",
+	    "Ext_definition_lists",
+	    "Ext_example_lists",
+	    "Ext_all_symbols_escapable",
+	    "Ext_intraword_underscores",
+	    "Ext_blank_before_blockquote",
+	    "Ext_blank_before_header",
+	    "Ext_strikeout",
+	    "Ext_superscript",
+	    "Ext_subscript",
+	    "Ext_auto_identifiers",
+	    "Ext_header_attributes",
+	    "Ext_implicit_header_references",
+	    "Ext_line_blocks",
+	    "Ext_shortcut_reference_links"
+	],
+	"writerReferenceLinks": false,
+	"writerWrapText": true,
+	"writerColumns": 72,
+	"writerEmailObfuscation": "JavascriptObfuscation",
+	"writerIdentifierPrefix": "",
+	"writerSourceURL": "Nothing",
+	"writerUserDataDir": "Nothing",
+	"writerCiteMethod": "Citeproc",
+	"writerHtml5": false,
+	"writerHtmlQTags": false,
+	"writerBeamer": false,
+	"writerSlideLevel": "Nothing",
+	"writerChapters": false,
+	"writerListings": false,
+	"writerHighlight": false,
+	"writerHighlightStyle": {
+	    "tokenStyles": [[
+		"KeywordTok",
+		{
+		    "tokenColor": {"Just": [0, 112, 32]},
+		    "tokenBackground": "Nothing",
+		    "tokenBold": true,
+		    "tokenItalic": false,
+		    "tokenUnderline": false
+		}
+	    ],[
+		"DataTypeTok",
+		{
+		    "tokenColor": {"Just": [144, 32, 0]},
+		    "tokenBackground": "Nothing",
+		    "tokenBold": false,
+		    "tokenItalic": false,
+		    "tokenUnderline": false
+		}
+	    ],[
+		"DecValTok",
+		{
+		    "tokenColor": {"Just": [64, 160, 112]},
+		    "tokenBackground": "Nothing",
+		    "tokenBold": false,
+		    "tokenItalic": false,
+		    "tokenUnderline": false
+		}
+	    ],[
+		"BaseNTok",
+		{
+		    "tokenColor": {"Just": [64, 160, 112]},
+		    "tokenBackground": "Nothing",
+		    "tokenBold": false,
+		    "tokenItalic": false,
+		    "tokenUnderline": false
+		}
+	    ],[
+		"FloatTok",
+		{
+		    "tokenColor": {"Just": [64, 160,112]},
+		    "tokenBackground": "Nothing",
+		    "tokenBold": false,
+		    "tokenItalic": false,
+		    "tokenUnderline": false
+		}
+	    ],[
+		"CharTok",
+		{
+		    "tokenColor": {"Just": [64, 112,160]},
+		    "tokenBackground": "Nothing",
+		    "tokenBold": false,
+		    "tokenItalic": false,
+		    "tokenUnderline": false
+		}
+	    ],[
+		"StringTok",
+		{
+		    "tokenColor": {"Just": [64, 112, 160]},
+		    "tokenBackground": "Nothing",
+		    "tokenBold": false,
+		    "tokenItalic": false,
+		    "tokenUnderline": false
+		}
+	    ],[
+		"CommentTok",
+		{
+		    "tokenColor": {"Just": [96, 160, 176]},
+		    "tokenBackground": "Nothing",
+		    "tokenBold": false,
+		    "tokenItalic": true,
+		    "tokenUnderline": false
+		}
+	    ],[
+		"OtherTok",
+		{
+		    "tokenColor": {"Just": [0, 112, 32]},
+		    "tokenBackground": "Nothing",
+		    "tokenBold": false,
+		    "tokenItalic": false,
+		    "tokenUnderline": false
+		}
+	    ],[
+		"AlertTok",
+		{
+		    "tokenColor": {"Just": [255, 0, 0]},
+		    "tokenBackground": "Nothing",
+		    "tokenBold": true,
+		    "tokenItalic": false,
+		    "tokenUnderline": false
+		}
+	    ],[
+		"FunctionTok",
+		{
+		    "tokenColor": {"Just": [6, 40, 126]},
+		    "tokenBackground": "Nothing",
+		    "tokenBold": false,
+		    "tokenItalic": false,
+		    "tokenUnderline": false
+		}
+	    ],[
+		"ErrorTok",
+		{
+		    "tokenColor": {"Just": [255, 0, 0]},
+		    "tokenBackground": "Nothing",
+		    "tokenBold": true,
+		    "tokenItalic": false,
+		    "tokenUnderline": false
+		}
+	    ]],
+	    "defaultColor": "Nothing",
+	    "backgroundColor": "Nothing",
+	    "lineNumberColor": {"Just": [170, 170, 170]},
+	    "lineNumberBackgroundColor": "Nothing"
+	},
+	"writerSetextHeaders": true,
+	"writerTeXLigatures": true,
+	"writerEpubVersion": "Nothing",
+	"writerEpubMetadata": "",
+	"writerEpubStylesheet": "Nothing",
+	"writerEpubFonts": [],
+	"writerEpubChapterLevel": 1,
+	"writerTOCDepth": 3,
+	"writerReferenceODT": "Nothing",
+	"writerReferenceDocx": "Nothing",
+	"writerMediaBag": [],
+	"writerVerbose": false,
+	"writerLaTeXArgs": []
+    },
+    "readerOptions": {
+	"readerExtensions": [
+	    "Ext_footnotes",
+	    "Ext_inline_notes",
+	    "Ext_pandoc_title_block",
+	    "Ext_yaml_metadata_block",
+	    "Ext_table_captions",
+	    "Ext_implicit_figures",
+	    "Ext_simple_tables",
+	    "Ext_multiline_tables",
+	    "Ext_grid_tables",
+	    "Ext_pipe_tables",
+	    "Ext_citations",
+	    "Ext_raw_tex",
+	    "Ext_raw_html",
+	    "Ext_tex_math_dollars",
+	    "Ext_latex_macros",
+	    "Ext_fenced_code_blocks",
+	    "Ext_fenced_code_attributes",
+	    "Ext_backtick_code_blocks",
+	    "Ext_inline_code_attributes",
+	    "Ext_markdown_in_html_blocks",
+	    "Ext_native_divs",
+	    "Ext_native_spans",
+	    "Ext_escaped_line_breaks",
+	    "Ext_fancy_lists",
+	    "Ext_startnum",
+	    "Ext_definition_lists",
+	    "Ext_example_lists",
+	    "Ext_all_symbols_escapable",
+	    "Ext_intraword_underscores",
+	    "Ext_blank_before_blockquote",
+	    "Ext_blank_before_header",
+	    "Ext_strikeout",
+	    "Ext_superscript",
+	    "Ext_subscript",
+	    "Ext_auto_identifiers",
+	    "Ext_header_attributes",
+	    "Ext_implicit_header_references",
+	    "Ext_line_blocks",
+	    "Ext_shortcut_reference_links"
+	],
+	"readerSmart": false,
+	"readerStandalone": false,
+	"readerParseRaw": false,
+	"readerColumns": 80,
+	"readerTabStop": 4,
+	"readerOldDashes": false,
+	"readerApplyMacros": true,
+	"readerIndentedCodeClasses": [],
+	"readerDefaultImageExtension": "",
+	"readerTrace": false,
+	"readerTrackChanges": "AcceptChanges"
+    }
+}

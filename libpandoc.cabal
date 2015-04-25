@@ -21,7 +21,8 @@ Executable libpandoc.dll
                         utf8-string       >= 0.3,
                         highlighting-kate >= 0.5,
                         data-default      >= 0.5,
-                        bytestring        >= 0.10
+                        bytestring        >= 0.10,
+                        json              >= 0.9
   Hs-Source-Dirs:       src
   Include-Dirs:         src
   C-Sources:            src/pandoc.c
