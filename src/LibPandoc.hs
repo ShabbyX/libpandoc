@@ -1,7 +1,10 @@
 {-# LANGUAGE ForeignFunctionInterface #-}
+{-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE RankNTypes #-}
 {-
  - Copyright (C) 2009-2010  Anton Tayanovskyy <name.surname@gmail.com>
  - Copyright (C) 2015  Shahbaz Youssefi <ShabbyX@gmail.com>
+ - Copyright (C) 2015  Katherine Whitlock <toroidalcode@gmail.com>
  -
  - This file is part of libpandoc, providing C bindings to Pandoc.
  -
@@ -23,6 +26,7 @@
 module LibPandoc (pandoc, LibPandocSettings(..), defaultLibPandocSettings) where
 
 import           Control.Arrow              ((>>>))
+import           Control.Exception          (catch, SomeException(..))
 import           Control.Monad.Except       (MonadError(..))
 import qualified Data.ByteString.Lazy.Char8 as BLC
 import qualified Data.Char                  as Char
@@ -68,7 +72,6 @@ getInputFormat x =
       "rst"        -> Just readRST
 --      "texmath"    -> Just readTeXMath  TODO: disabled until I figure out how to convert it to ReaderOptions -> String -> Pandoc
       "textile"    -> Just readTextile
---      "xml"        -> Just readXml
       _            -> Nothing
 
 getOutputFormat :: String -> Maybe (WriterOptions -> Pandoc -> String)
@@ -93,7 +96,6 @@ getOutputFormat x =
       "rtf"          -> Just writeRTF
       "texinfo"      -> Just writeTexinfo
       "textile"      -> Just writeTextile
---      "xml"          -> Just writeXml
       _              -> Nothing
 
 
@@ -127,12 +129,18 @@ pandoc bufferSize input output settings reader writer userData = do
   o <- peekCString output
   s <- getSettings settings
   case (getInputFormat i, getOutputFormat o) of
-    (Nothing, _)            -> newCString "Invalid input format."
-    (_, Nothing)            -> newCString "Invalid output format."
-    (Just read, Just write) ->
-      do let run = read (readerOptions s) >>> handleError >>> write (writerOptions s)
-         transform (decodeInt bufferSize) run r w userData
-         return nullPtr
+   (Nothing, _)            -> newCString "Invalid input format."
+   (_, Nothing)            -> newCString "Invalid output format."
+   (Just read, Just write) ->
+     do let run = read (readerOptions s) >>> handleError >>> write (writerOptions s)
+        result <- tryMaybe (transform (decodeInt bufferSize) run r w userData)
+        case result of
+         Nothing -> return nullPtr
+         Just r -> newCString (show r)
+
+  where
+    tryMaybe :: IO a -> IO (Maybe SomeException)
+    tryMaybe a = catch (a >> return Nothing) (return . Just)
 
 decodeInt :: CInt -> Int
 decodeInt = fromInteger . toInteger
