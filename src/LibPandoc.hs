@@ -1,5 +1,4 @@
 {-# LANGUAGE ForeignFunctionInterface #-}
-{-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE RankNTypes #-}
 {-
  - Copyright (C) 2009-2010  Anton Tayanovskyy <name.surname@gmail.com>
@@ -26,13 +25,15 @@
 module LibPandoc (pandoc, LibPandocSettings(..), defaultLibPandocSettings) where
 
 import           Control.Arrow              ((>>>))
-import           Control.Exception          (catch, SomeException(..))
+import           Control.Exception          (catch, Exception(..), SomeException(..))
 import           Control.Monad.Except       (MonadError(..))
 import qualified Data.ByteString.Lazy.Char8 as BLC
 import qualified Data.Char                  as Char
 import qualified Data.List                  as List
 import qualified Data.Map                   as Map
 import           Data.Maybe
+import           Data.String (IsString)
+import           Data.Typeable              (typeOf)
 import           Foreign
 import           Foreign.C.String
 import           Foreign.C.Types
@@ -42,7 +43,7 @@ import           System.IO.Unsafe
 import           Text.Pandoc
 import           Text.Pandoc.Error
 import           Text.JSON
-import           Text.JSON.Generic         (toJSON,fromJSON)
+import           Text.JSON.Generic          (toJSON,fromJSON)
 
 -- | The type of the main entry point.
 type CPandoc = CInt -> CString -> CString -> CString
@@ -135,8 +136,8 @@ pandoc bufferSize input output settings reader writer userData = do
      do let run = read (readerOptions s) >>> handleError >>> write (writerOptions s)
         result <- tryMaybe (transform (decodeInt bufferSize) run r w userData)
         case result of
+         Just (SomeException res) -> newCString (show (typeOf res) ++ ": " ++ show res)
          Nothing -> return nullPtr
-         Just r -> newCString (show r)
 
   where
     tryMaybe :: IO a -> IO (Maybe SomeException)
