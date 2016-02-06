@@ -115,7 +115,7 @@ getSettings settings = do
   let defaults = defaultLibPandocSettings
   s <- peekCString settings
   let userSettings = fromResult . decodeStrict $ s
-      combined     = userSettings `joinJSON` toJSON defaults 
+      combined     = userSettings `joinJSON` toJSON defaults
   return . fromResult . fromJSON $ combined
   where
     fromResult :: Result a -> a
