@@ -30,8 +30,11 @@ Or simply:
     $ make
 
 A successful build creates the shared library file in
-`./dist/build/libpandoc.dll/libpandoc.dll`.  Installation and use of
+`./dist/build/libpandoc.so/libpandoc.so`.  Installation and use of
 the library is platform-dependent.
+
+Note: On Windows, you should edit the `libpandoc.cabal` file to rename
+the extension of the shared object to dll.
 
 [haskell-platform]: http://hackage.haskell.org/platform/
 

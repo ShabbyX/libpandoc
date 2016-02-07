@@ -10,7 +10,7 @@ main:
 	cabal build
 
 install:
-	install -T dist/build/libpandoc.dll/libpandoc.dll /usr/lib/libpandoc.so
+	install dist/build/libpandoc.so/libpandoc.so /usr/lib/
 	install src/pandoc.h /usr/include/
 	ldconfig
 

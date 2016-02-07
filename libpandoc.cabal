@@ -6,7 +6,7 @@ Author:                 Anton Tayanovskyy <name.surname@gmail.com>
 Maintainer:             Shahbaz Youssefi <shabbyx@gmail.com>
 Synopsis:               Pandoc as a shared object or DLL.
 Build-Type:             Simple
-Executable libpandoc.dll
+Executable libpandoc.so
   If os(windows)
     CPP-Options:        -DWIN32
   Extensions:           ForeignFunctionInterface
