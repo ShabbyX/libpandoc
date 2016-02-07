@@ -28,4 +28,9 @@ Executable libpandoc.so
   Install-Includes:     pandoc.h
   Main-Is:              LibPandoc.hs
   CC-Options:           -fPIC
-  Ghc-Options:          -no-hs-main -dynamic -shared -lHSrts-ghc$compiler
+  Ghc-Options:          -no-hs-main -shared
+  if !os(windows)
+    Ghc-Options:        -dynamic
+    extra-libraries:    -lHSrts-ghc$compiler
+  else
+    extra-libraries:    -lHSrts
