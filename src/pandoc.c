@@ -24,7 +24,7 @@
 
 extern void __stginit_LibPandoc(void);
 
-BOOL STDCALL DllMain(HANDLE hModule, DWORD reason, void *reserved)
+BOOL WINAPI DllMain(HINSTANCE hModule, DWORD reason, LPVOID reserved)
 {
   static char *args[] = {"libpandoc", NULL};
   if (reason == DLL_PROCESS_ATTACH) {

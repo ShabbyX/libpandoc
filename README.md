@@ -54,7 +54,7 @@ shared library under `%windir%\System32`.
 
 The C interface is defined in `src/pandoc.h`. Synopsis:
 
-    #include <libpandoc.h>
+    #include <pandoc.h>
 
     pandoc_init();
     char* error = pandoc(1024       /* buffer size */,
