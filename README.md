@@ -21,13 +21,13 @@ license.
 Building follows standard Haskell conventions and requires the
 [Haskell Platform][haskell-platform]:
 
-    # cabal configure [--global]
-    # cabal build
+    $ cabal configure [--global]
+    $ cabal install --only-dependencies
+    $ cabal build
 
-The configure stage may report missing dependencies.  These can be
-obtained as follows:
+Or simply:
 
-    # cabal install [dependency]
+    $ make
 
 A successful build creates the shared library file in
 `./dist/build/libpandoc.dll/libpandoc.dll`.  Installation and use of
@@ -37,32 +37,13 @@ the library is platform-dependent.
 
 ### UNIX Installation
 
-For your convenience, an `./install.sh` is provided that installs the
-shared object and header files under `/usr/local`.  It has been tested
-on Ubuntu Linux.
-
-To install system-wide in the `$LIB` folder, copy `libpandoc.dll` to
-`$LIB/libpandoc.so` and run `ldconfig $LIB`.  Also, copy
-`src/pandoc.h` to `$INCLUDES/`.
-
-To use the library from C, do:
-
-    #include <pandoc.h>
-    pandoc(...)
-
-And compile as:
-
-    gcc [my-file.c] -lpandoc
+The accompanying `Makefile` contains `install` and `uninstall` targets
+that take care of installing the header and library in `/usr`.
 
 ### Windows Installation
 
 For your convenience, an `./install.bat` is provided that installs the
 shared library under `%windir%\System32`.
-
-Deploy the shared library in the same folder as your application, or
-put it under `%PATH%`.  Installation of header files depends on the C
-compiler.
-
 
 ## Using
 
@@ -70,15 +51,21 @@ compiler.
 
 The C interface is defined in `src/pandoc.h`. Synopsis:
 
+    #include <libpandoc.h>
+
     pandoc_init();
     char* error = pandoc(1024       /* buffer size */,
                          "markdown" /* input format */,
                          "html"     /* output format */,
-                         NULL       /* XML settings */,
+                         NULL       /* JSON settings */,
                          reader     /* the reader function */,
                          writer     /* the writer function */,
                          user_data  /* private user data */);
     pandoc_exit();
+
+Compile as:
+
+    gcc [my-file.c] -lpandoc
 
 Haskell runtime has to be started and stopped explicitly via the
 `init/exit` functions.
@@ -92,7 +79,7 @@ as provided as the first argument to the `pandoc` function.  `user_data` is
 the same pointer passed as the last argument of the `pandoc` function.  The
 reader function must fill the buffer with the input to be converted by Pandoc.
 The return value is the number of characters read. The reader is no longer called
-when this value is zero
+when this value is zero.
 
 The writer function is in the following form:
 
@@ -106,7 +93,8 @@ contents of the buffer as the output of the conversion by Pandoc.
 #### Input and Output Formats
 
 Input and output formats depend on Pandoc version the library is built
-against.  They are passed as strings.  Possible values include:
+against.  They are passed as strings.  Possible values include (TODO: needs
+to be verified and possibly extended):
 
 - For reader:
 
@@ -142,9 +130,6 @@ against.  They are passed as strings.  Possible values include:
   * texinfo
   * textile
 
-In addition, an automatically derived `xml` format is provided for
-both input and output.
-
 Note: Some read and write types supported by Pandoc striked above are not yet
 supported by libpandoc.
 
@@ -164,11 +149,14 @@ fields that have non-default values have to be provided.
 ### Other Interfaces
 
   * A .NET/C# interface is available as [libpandoc-dotnet][libpandoc-dotnet]
-    (probably outdated).
+    (currently outdated).
 
 
 ## Changelog
 
+  * 0.8
+    - Switched to JSON internal representation instead of XML
+    - Updated to Pandoc version 1.16 and higher
   * 0.7 - Updated to Pandoc version 1.13 and higher
   * 0.6 - Updated to Pandoc version 1.10 and higher
   * 0.5 - Implemented XML generics to support all config settings.
@@ -180,6 +168,10 @@ Original author is Anton Tayanovskyy <name.surname@gmail.com>.
 
 Shahbaz Youssefi <shabbyx@gmail.com> is the current maintainer.  Bug reports and
 feature requests are welcome.
+
+Additional Contributers:
+
+- Katherine Whitlock
 
 
 [haskell]:          http://www.haskell.org
