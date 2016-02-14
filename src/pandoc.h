@@ -39,7 +39,7 @@ void pandoc_exit();
 /*
  * Calls `pandoc` with given input and output formats and streams.
  * Returns a `NULL` on success, or a `NULL`-terminated error message
- * on failure.  Settings is an XML string conforming to a schema
+ * on failure.  Settings is a JSON string conforming to a schema
  * distributed with `libpandoc`.  Settings can be `NULL`.  All strings
  * should be encoded as UTF-8.  User data is any pointer.
  */

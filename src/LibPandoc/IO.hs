@@ -41,7 +41,7 @@ type CWriter = CString -> CInt -> Ptr () -> IO ()
 -- | parameter is the size of the buffer in bytes.  The number of
 -- | bytes returned by the reader and passed to the writer should not
 -- | exceed the buffer size.
-transform :: Int -> (String -> String) -> CReader -> CWriter -> Ptr () -> IO ()
+transform :: Int -> (String -> IO String) -> CReader -> CWriter -> Ptr () -> IO ()
 transform bufferSize transformer reader writer userData =
     withBuffer bufferSize $ \rbuf ->
     withBuffer bufferSize $ \wbuf ->
@@ -65,8 +65,15 @@ readStream (Buffer (buf, size)) reader userData = unsafeInterleaveIO result wher
       k <- reader buf userData
       fmap (Utf8.decodeString s ++) (loop (decodeInt k))
 
-writeStream :: Buffer -> CWriter -> String -> Ptr() -> IO ()
-writeStream (Buffer (buf, size)) writer text userData = loop text where
+{--
+writeStream' :: Buffer -> CWriter -> IO String -> Ptr() -> IO ()
+writeStream' buf writer text userData = do
+    text' <- text
+    writeStream buf writer text' userData
+--}
+
+writeStream :: Buffer -> CWriter -> IO String -> Ptr() -> IO ()
+writeStream (Buffer (buf, size)) writer text userData = text >>= loop where
     buffer = castPtr buf
     loop text = do
       let (head, tail) = splitAt (div size 4) text
@@ -78,7 +85,7 @@ writeStream (Buffer (buf, size)) writer text userData = loop text where
         _  -> loop tail
 
 decodeInt :: CInt -> Int
-decodeInt x = fromInteger (toInteger x)
+decodeInt = fromInteger . toInteger
 
 encodeInt :: Int -> CInt
-encodeInt x = fromInteger (toInteger x)
+encodeInt = fromInteger . toInteger

@@ -7,7 +7,7 @@ Maintainer:             Shahbaz Youssefi <shabbyx@gmail.com>
 Synopsis:               Pandoc as a shared object or DLL.
 Build-Type:             Simple
 Executable libpandoc.so
-  If os(windows)
+  if os(windows)
     CPP-Options:        -DWIN32
   Extensions:           ForeignFunctionInterface
   Build-Depends:        base              >= 4.6,
@@ -32,6 +32,6 @@ Executable libpandoc.so
   Ghc-Options:          -no-hs-main -shared
   if !os(windows)
     Ghc-Options:        -dynamic
-    extra-libraries:    HSrts-ghc$compiler
+    extra-libraries:    HSrts-ghc7.10.2
   else
     extra-libraries:    HSrts

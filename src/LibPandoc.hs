@@ -26,22 +26,21 @@ module LibPandoc (pandoc, LibPandocSettings(..), defaultLibPandocSettings) where
 
 import           Control.Arrow              ((>>>))
 import           Control.Exception          (catch, Exception(..), SomeException(..))
-import           Control.Monad.Except       (MonadError(..))
+import           Control.Monad              ((>=>), liftM)
 import qualified Data.ByteString.Lazy.Char8 as BLC
 import qualified Data.Char                  as Char
 import qualified Data.List                  as List
 import qualified Data.Map                   as Map
 import           Data.Maybe
-import           Data.String (IsString)
 import           Data.Typeable              (typeOf)
 import           Foreign
 import           Foreign.C.String
 import           Foreign.C.Types
 import           LibPandoc.IO
 import           LibPandoc.Settings
-import           System.IO.Unsafe
 import           Text.Pandoc
 import           Text.Pandoc.Error
+import           Text.Pandoc.MediaBag
 import           Text.JSON
 import           Text.JSON.Generic          (toJSON,fromJSON)
 
@@ -51,54 +50,8 @@ type CPandoc = CInt -> CString -> CString -> CString
              -> IO CString
 
 foreign export ccall "pandoc" pandoc     :: CPandoc
-foreign export ccall "increase" increase :: CInt -> IO CInt
 foreign import ccall "dynamic" peekReader :: FunPtr CReader -> CReader
 foreign import ccall "dynamic" peekWriter :: FunPtr CWriter -> CWriter
-
-increase :: CInt -> IO CInt
-increase x = return (x + 1)
-
-readNativeWrapper :: ReaderOptions -> String -> Either PandocError Pandoc
-readNativeWrapper options = readNative
-
-getInputFormat :: String -> Maybe (ReaderOptions -> String -> Either PandocError Pandoc)
-getInputFormat x =
-    case map Char.toLower x of
-      "docbook"    -> Just readDocBook
-      "html"       -> Just readHtml
-      "latex"      -> Just readLaTeX
-      "markdown"   -> Just readMarkdown
-      "mediawiki"  -> Just readMediaWiki
-      "native"     -> Just readNativeWrapper
-      "rst"        -> Just readRST
---      "texmath"    -> Just readTeXMath  TODO: disabled until I figure out how to convert it to ReaderOptions -> String -> Pandoc
-      "textile"    -> Just readTextile
-      _            -> Nothing
-
-getOutputFormat :: String -> Maybe (WriterOptions -> Pandoc -> String)
-getOutputFormat x =
-    case map Char.toLower x of
-      "asciidoc"     -> Just writeAsciiDoc
-      "context"      -> Just writeConTeXt
-      "docbook"      -> Just writeDocbook
---      "docx"         -> Just writeDocx  TODO: The following are disabled because they return IO types
---      "epub"         -> Just writeEPUB  TODO: Which I do not know yet how to mix with the non IO type
---      "fb2"          -> Just writeFB2
-      "html"         -> Just writeHtmlString
-      "latex"        -> Just writeLaTeX
-      "man"          -> Just writeMan
-      "markdown"     -> Just writeMarkdown
-      "mediawiki"    -> Just writeMediaWiki
-      "native"       -> Just writeNative
---      "odt"          -> Just writeODT
-      "opendocument" -> Just writeOpenDocument
-      "org"          -> Just writeOrg
-      "rst"          -> Just writeRST
-      "rtf"          -> Just writeRTF
-      "texinfo"      -> Just writeTexinfo
-      "textile"      -> Just writeTextile
-      _              -> Nothing
-
 
 -- | Gives preferential treatment to first argument (should be user options)
 joinJSON :: JSValue -> JSValue -> JSValue
@@ -124,17 +77,34 @@ getSettings settings = do
 
 pandoc :: CPandoc
 pandoc bufferSize input output settings reader writer userData = do
-  let r = peekReader reader
-      w = peekWriter writer
+  let cr = peekReader reader
+      cw = peekWriter writer
   i <- peekCString input
   o <- peekCString output
   s <- getSettings settings
-  case (getInputFormat i, getOutputFormat o) of
-   (Nothing, _)            -> newCString "Invalid input format."
-   (_, Nothing)            -> newCString "Invalid output format."
-   (Just read, Just write) ->
-     do let run = read (readerOptions s) >>> handleError >>> write (writerOptions s)
-        result <- tryMaybe (transform (decodeInt bufferSize) run r w userData)
+
+  read <- return $ getReader i >>= \rd -> case rd of
+    -- if the reader returns just a string, add an empty media bag to it
+    StringReader r -> Right $ \o s -> r o s >>= \p -> return $ p >>= \x -> Right (x, mempty::MediaBag)
+    -- otherwise, the output (Pandoc, MediaBag) is already fine
+    ByteStringReader r -> Right $ \o s -> r o (BLC.pack s)
+  -- Note: currently, the media bag is actually later thrown away.  Perhaps in the future there could be support for it
+
+  write <- return $ getWriter o >>= \wr -> case wr of
+    -- if the writer returns just a string, add an IO
+    PureStringWriter w -> Right $ \o s -> return $ w o s
+    -- if it returns an IO string, it's fine
+    IOStringWriter w -> Right w
+    -- if it returns an IO byte string, convert it to IO string
+    IOByteStringWriter w -> Right $ \o s -> w o s >>= \s -> return $ BLC.unpack s
+
+  case (read, write) of
+   (Left e, _)            -> newCString e
+   (_, Left e)            -> newCString e
+   (Right r, Right w) ->
+     do let run = (r (readerOptions s) >=> return . liftM fst) >>> liftM handleError >>> \x -> x >>= w (writerOptions s)
+        -- run takes the media bag out of reader, as it is currently unused.  Since the reader returns IO, everything is lifted
+        result <- tryMaybe (transform (decodeInt bufferSize) run cr cw userData)
         case result of
          Just (SomeException res) -> newCString (show (typeOf res) ++ ": " ++ show res)
          Nothing -> return nullPtr

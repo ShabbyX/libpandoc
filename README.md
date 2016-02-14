@@ -93,48 +93,13 @@ the buffer and `user_data` is the last argument of the `pandoc` function,
 similar to `user_data` of the reader.  The writer function must write the
 contents of the buffer as the output of the conversion by Pandoc.
 
+
 #### Input and Output Formats
 
 Input and output formats depend on Pandoc version the library is built
-against.  They are passed as strings.  Possible values include (TODO: needs
-to be verified and possibly extended):
+against.  They are passed as strings.  Reader and writer names are the same
+as understood by Pandoc, for example `"html"` or `"markdown"`.
 
-- For reader:
-
-  * docbook
-  * html
-  * latex
-  * markdown
-  * mediawiki
-  * native
-  * rst
-  * ~~texmath~~
-  * textile
-
-- For writer:
-
-  * asciidoc
-  * context
-  * docbook
-  * ~~docx~~
-  * ~~epub~~
-  * ~~fb2~~
-  * html
-  * latex
-  * man
-  * markdown
-  * mediawiki
-  * native
-  * ~~odt~~
-  * opendocument
-  * org
-  * rst
-  * rtf
-  * texinfo
-  * textile
-
-Note: Some read and write types supported by Pandoc striked above are not yet
-supported by libpandoc.
 
 #### JSON Settings
 
@@ -158,7 +123,8 @@ fields that have non-default values have to be provided.
 ## Changelog
 
   * 0.8
-    - Switched to JSON internal representation instead of XML
+    - Switched to JSON format for settings instead of XML
+    - Completed support for all Pandoc readers and writers
     - Updated to Pandoc version 1.16 and higher
   * 0.7 - Updated to Pandoc version 1.13 and higher
   * 0.6 - Updated to Pandoc version 1.10 and higher
