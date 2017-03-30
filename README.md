@@ -91,8 +91,10 @@ The writer function is in the following form:
 Where `buf` is the buffer to be written, `len` is the number of elements in
 the buffer and `user_data` is the last argument of the `pandoc` function,
 similar to `user_data` of the reader.  The writer function must write the
-contents of the buffer as the output of the conversion by Pandoc.
-
+contents of the buffer as the output of the conversion by Pandoc. `buf` 
+is not necessarily `NUL`-terminated. In fact, most of the time it isn't 
+because the output could be given to writer() in chunks. That's also why 
+there is a `len` argument.
 
 #### Input and Output Formats
 
@@ -112,6 +114,39 @@ The file `defaults.json` is a printout of the default settings.  NOTE: it may be
 with respect to the current library version.  The custom settings
 passed by the user are merged with the default settings, so only the
 fields that have non-default values have to be provided.
+
+### C example code
+
+```c
+#include <stdlib.h>
+#include <string.h>
+
+#include <pandoc.h>
+
+int done = 0;
+const char test[] = "$\\textit{K}$ -trivial, $\\textit{K}$ -low and ${{\\mathrm{\\textit{MLR}}}}$ -low Sequences: A Tutorial";
+const int BUFFER_LENGTH = 1024;
+
+int reader(char *buf, void *user_data) {
+    if (done) {
+        return 0;
+    }
+    strncpy(buf, test, BUFFER_LENGTH);
+    done = 1;
+    return strlen(test);
+}
+
+void writer(const char *buf, int len, void *user_data) {
+    fwrite(buf, 1, len, stdout);
+}
+
+int main() {
+    pandoc_init();
+    pandoc(BUFFER_LENGTH, "markdown", "plain", NULL, &reader, &writer, NULL);
+    printf("\n");      /* if desired */
+    pandoc_exit();
+}
+```
 
 
 ### Other Interfaces
