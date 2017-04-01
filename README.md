@@ -71,7 +71,11 @@ Compile as:
     gcc [my-file.c] -lpandoc
 
 Haskell runtime has to be started and stopped explicitly via the
-`init/exit` functions.
+`init/exit` functions.  Note that you don't need to restart the Haskell runtime
+on every call to `pandoc`.  As a matter of fact, you may not even be able to
+initialize the Haskell runtime after stopping it, e.g. due to
+[this bug](https://downloads.haskell.org/%7Eghc/7.8.2/docs/html/users_guide/bugs-and-infelicities.html#infelicities-ffi)
+of GHC.
 
 The reader function is in the following form:
 
