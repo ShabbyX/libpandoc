@@ -32,6 +32,6 @@ Executable libpandoc.so
   Ghc-Options:          -no-hs-main -shared
   if !os(windows)
     Ghc-Options:        -dynamic
-    extra-libraries:    HSrts-ghc7.10.2
+    extra-libraries:    HSrts-ghc$compiler
   else
     extra-libraries:    HSrts
