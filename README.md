@@ -54,17 +54,19 @@ shared library under `%windir%\System32`.
 
 The C interface is defined in `src/pandoc.h`. Synopsis:
 
-    #include <pandoc.h>
+```c
+#include <pandoc.h>
 
-    pandoc_init();
-    char* error = pandoc(1024       /* buffer size */,
-                         "markdown" /* input format */,
-                         "html"     /* output format */,
-                         NULL       /* JSON settings */,
-                         reader     /* the reader function */,
-                         writer     /* the writer function */,
-                         user_data  /* private user data */);
-    pandoc_exit();
+pandoc_init();
+char* error = pandoc(1024       /* buffer size */,
+                     "markdown" /* input format */,
+                     "html"     /* output format */,
+                     NULL       /* JSON settings */,
+                     reader     /* the reader function */,
+                     writer     /* the writer function */,
+                     user_data  /* private user data */);
+pandoc_exit();
+```
 
 Compile as:
 
